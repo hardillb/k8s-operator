@@ -1,5 +1,5 @@
-apiVersion: randoms.k8s.hardill.me.uk
-Kind: Random
+apiVersion: k8s.hardill.me.uk
+kind: Random
 metadata:
   name: first
 spec:
