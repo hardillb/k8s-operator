@@ -13,8 +13,10 @@ spec:
           type: object
           properties:
             spec:
-              seed:
-                type: integer
+              type: object
+              spec:
+                seed:
+                  type: integer
   scope: Namespaced
   names:
     plural: randoms
