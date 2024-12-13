@@ -1,0 +1,6 @@
+aptVersion: randoms.k8s.hardill.me.uk
+Kind: Random
+metadata:
+  name: first
+spec:
+  seed: 10
