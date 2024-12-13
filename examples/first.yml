@@ -1,4 +1,4 @@
-aptVersion: randoms.k8s.hardill.me.uk
+apiVersion: randoms.k8s.hardill.me.uk
 Kind: Random
 metadata:
   name: first
