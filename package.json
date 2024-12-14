@@ -1,0 +1,29 @@
+{
+  "name": "node-red-k8s-operator",
+  "version": "1.0.0",
+  "description": "Example Node-RED Kubernetes Operator",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hardillb/k8s-operator.git"
+  },
+  "keywords": [
+    "node-red",
+    "kubernetes"
+  ],
+  "author": "hardillb@gmail.com",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/hardillb/k8s-operator/issues"
+  },
+  "homepage": "https://github.com/hardillb/k8s-operator#readme",
+  "dependencies": {
+    "@kubernetes/client-node": "^0.22.3"
+  }
+}

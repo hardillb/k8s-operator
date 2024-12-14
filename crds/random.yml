@@ -17,6 +17,8 @@ spec:
               properties:
                 seed:
                   type: integer
+                  maximum: 100
+                  minimum: 1
   scope: Namespaced
   names:
     plural: randoms
