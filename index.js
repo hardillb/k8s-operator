@@ -23,6 +23,8 @@ async function watching () {
             // allowWatchBookmarks: true
         },
         async (type, api, obj) => {
+            console.log(type)
+            // console.log(JSON.stringify(api, null, 2))
             switch (type) {
                 case 'ADDED':
                     // create pod
@@ -38,8 +40,6 @@ async function watching () {
                     k8sApi.deleteNamespacedPod(`${api.metadata.name}-node-red`, api.metadata.namespace)
                     break;
             }
-            console.log(type)
-            // console.log(JSON.stringify(api, null, 2))
         },
         (err) => {
             console.log(err)
