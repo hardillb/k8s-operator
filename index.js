@@ -27,9 +27,9 @@ async function watching () {
                 case 'ADDED':
                     // create pod
                     const localPod = JSON.parse(JSON.stringify(podTemplate))
-                    localPod.metaData.name = `${api.metaData.name}-node-red`
+                    localPod.metaData.name = `${api.metadata.name}-node-red`
                     console.log(JSON.stringify(localPod, null, 2))
-                    k8sApi.createNamespacedPod(api.metaData.namespace, localPod)
+                    k8sApi.createNamespacedPod(api.metadata.namespace, localPod)
                 case 'MODIFIED':
                 case 'DELETED':
                     // delete pod
