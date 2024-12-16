@@ -27,11 +27,17 @@ async function watching () {
             // console.log(JSON.stringify(api, null, 2))
             switch (type) {
                 case 'ADDED':
-                    // create pod
-                    const localPod = JSON.parse(JSON.stringify(podTemplate))
-                    localPod.metadata.name = `${api.metadata.name}-node-red`
-                    console.log(JSON.stringify(localPod, null, 2))
-                    k8sApi.createNamespacedPod(api.metadata.namespace, localPod)
+                    // need to check if already exists
+                    try {
+                        await k8sApi.readNamespacedPodStatus(`${api.metadata.name}-node-red`, api.metadata.namespace)
+                        return
+                    } catch (err) {
+                        // create pod
+                        const localPod = JSON.parse(JSON.stringify(podTemplate))
+                        localPod.metadata.name = `${api.metadata.name}-node-red`
+                        console.log(JSON.stringify(localPod, null, 2))
+                        k8sApi.createNamespacedPod(api.metadata.namespace, localPod)
+                    }
                     break;
                 case 'MODIFIED':
                     break;
