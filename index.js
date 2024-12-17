@@ -40,6 +40,7 @@ async function watching () {
                     }
                     break;
                 case 'MODIFIED':
+                    console.log(JSON.stringify(api, null, 2))
                     break;
                 case 'DELETED':
                     // delete pod
