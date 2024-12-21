@@ -1,7 +1,7 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: node-red.k8s.hardill.me.uk
+  name: node-reds.k8s.hardill.me.uk
 spec:
   group: k8s.hardill.me.uk
   versions:
@@ -23,7 +23,7 @@ spec:
                   type: string
                 nodes:
                   description: List on npm packages to install
-                  type: arrays
+                  type: array
                   items:
                     type: object
                     properties:
@@ -31,7 +31,7 @@ spec:
                         type: string
                       version:
                         type: string
-                      required: ["name", "version"]
+                    required: ["name", "version"]
                 service:
                   type: object
                   properties:
