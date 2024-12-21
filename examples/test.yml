@@ -7,3 +7,4 @@ spec:
     enabled: true
   ingress:
     enabled: true
+    hostname: 'node-red.example.com'

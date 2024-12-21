@@ -42,6 +42,8 @@ spec:
                   properties:
                     enabled:
                       type: boolean
+                    hostname:
+                      type: string
           required: ["spec"]
   scope: Namespaced
   names:
