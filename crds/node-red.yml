@@ -34,8 +34,14 @@ spec:
                       required: ["name", "version"]
                 service:
                   type: object
+                  properties:
+                    enabled:
+                      type: boolean
                 ingress:
                   type: object
+                  properties:
+                    enabled:
+                      type: boolean
           required: ["spec"]
   scope: Namespaced
   names:
