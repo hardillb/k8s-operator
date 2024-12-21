@@ -4,7 +4,3 @@ metadata:
   name: first
 spec:
   seed: 10
-  service:
-    enabled: true
-  ingress:
-    enabled: true

@@ -1,0 +1,9 @@
+apiVersion: k8s.hardill.me.uk/v1
+kind: Node-RED
+metadata:
+  name: test
+spec:
+  service:
+    enabled: true
+  ingress:
+    enabled: true

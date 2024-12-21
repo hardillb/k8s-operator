@@ -4,7 +4,7 @@ const { podTemplate, serviceTemplate, ingressTemplate,  } = require('./lib/templ
 
 const group = 'k8s.hardill.me.uk'
 const version = 'v1'
-const plural = 'randoms'
+const plural = 'node-reds'
 
 const kubeConfig = new KubeConfig();
 // kubeConfig.loadFromDefault();
@@ -18,7 +18,7 @@ const k8sNetApi = kubeConfig.makeApiClient(NetworkingV1Api)
 
 
 async function watching () {
-    const req = await watch.watch('/apis/k8s.hardill.me.uk/v1/namespaces//randoms',
+    const req = await watch.watch(`/apis/${group}/v1/namespaces//${plural}`,
         {
             // allowWatchBookmarks: true
         },

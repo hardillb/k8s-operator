@@ -41,6 +41,6 @@ spec:
   names:
     plural: node-reds
     singular: node-red
-    kind: node-red
+    kind: Node-RED
     shortNames:
       - nr
