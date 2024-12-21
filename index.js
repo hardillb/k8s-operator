@@ -60,7 +60,7 @@ async function watching () {
                 case 'DELETED':
                     try {
                         // delete pod
-                        k8sNetApi.deleteNamespacedIngress(`${api.metadata.name}-node-red-ingress}`, api.metadata.namespace)
+                        k8sNetApi.deleteNamespacedIngress(`${api.metadata.name}-node-red-ingress`, api.metadata.namespace)
                         k8sApi.deleteNamespacedService(`${api.metadata.name}-node-red-service`, api.metadata.namespace)
                         k8sApi.deleteNamespacedPod(`${api.metadata.name}-node-red`, api.metadata.namespace)
                         break;
