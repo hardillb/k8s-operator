@@ -31,22 +31,26 @@ async function watching () {
                         return
                     } catch (err) {
                         // create pod
-                        const localPod = JSON.parse(JSON.stringify(podTemplate))
-                        localPod.metadata.name = `${api.metadata.name}-node-red`
-                        console.log(JSON.stringify(localPod, null, 2))
-                        k8sApi.createNamespacedPod(api.metadata.namespace, localPod)
-                        if (api.spec?.service?.enabled) {
-                            const localService = JSON.parse(JSON.stringify(serviceTemplate))
-                            localService.metadata.name = `${api.metadata.name}-node-red-service`
-                            localService.spec.selector.name = api.metadata.name
-                            k8sApi.createNamespacedService(api.metadata.namespace, localService)
-                            if (api.spec?.ingress?.enabled) {
-                                const localIngress = JSON.parse(JSON.stringify(ingressTemplate))
-                                localIngress.metadata.name = `${api.metadata.name}-node-red-ingress`
-                                localIngress.spec.rules[0].host = api.spec.ingress.hostname
-                                localIngress.spec.rules[0].http.paths[0].backend.service.name = `${api.metadata.name}-node-red-service`
-                                k8sNetApi.createNamespacedIngress(api.metadata.namespace, localIngress)
+                        try {
+                            const localPod = JSON.parse(JSON.stringify(podTemplate))
+                            localPod.metadata.name = `${api.metadata.name}-node-red`
+                            console.log(JSON.stringify(localPod, null, 2))
+                            k8sApi.createNamespacedPod(api.metadata.namespace, localPod)
+                            if (api.spec?.service?.enabled) {
+                                const localService = JSON.parse(JSON.stringify(serviceTemplate))
+                                localService.metadata.name = `${api.metadata.name}-node-red-service`
+                                localService.spec.selector.name = api.metadata.name
+                                k8sApi.createNamespacedService(api.metadata.namespace, localService)
+                                if (api.spec?.ingress?.enabled) {
+                                    const localIngress = JSON.parse(JSON.stringify(ingressTemplate))
+                                    localIngress.metadata.name = `${api.metadata.name}-node-red-ingress`
+                                    localIngress.spec.rules[0].host = api.spec.ingress.hostname
+                                    localIngress.spec.rules[0].http.paths[0].backend.service.name = `${api.metadata.name}-node-red-service`
+                                    k8sNetApi.createNamespacedIngress(api.metadata.namespace, localIngress)
+                                }
                             }
+                        } catch (err) {
+                            console.log(err)
                         }
                     }
                     break;
@@ -54,9 +58,15 @@ async function watching () {
                     console.log(JSON.stringify(api, null, 2))
                     break;
                 case 'DELETED':
-                    // delete pod
-                    k8sApi.deleteNamespacedPod(`${api.metadata.name}-node-red`, api.metadata.namespace)
-                    break;
+                    try {
+                        // delete pod
+                        k8sNetApi.deleteNamespacedIngress(`${api.metadata.name}-node-red-ingress}`, api.metadata.namespace)
+                        k8sApi.deleteNamespacedService(`${api.metadata.name}-node-red-service`, api.metadata.namespace)
+                        k8sApi.deleteNamespacedPod(`${api.metadata.name}-node-red`, api.metadata.namespace)
+                        break;
+                    } catch (err) {
+                        console.log(err)
+                    }
             }
         },
         (err) => {
