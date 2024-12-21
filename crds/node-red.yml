@@ -32,6 +32,10 @@ spec:
                       version:
                         type: string
                       required: ["name", "version"]
+                service:
+                  type: object
+                ingress:
+                  type: object
           required: ["spec"]
   scope: Namespaced
   names:

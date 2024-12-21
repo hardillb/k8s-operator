@@ -1,6 +1,6 @@
 const { AppsV1Api, CoreV1Api, CustomObjectsApi, KubeConfig, NetworkingV1Api, Watch } = require('@kubernetes/client-node')
 
-const { podTemplate } = require('./lib/templates.js')
+const { podTemplate, serviceTemplate, ingressTemplate,  } = require('./lib/templates.js')
 
 const group = 'k8s.hardill.me.uk'
 const version = 'v1'
@@ -23,8 +23,6 @@ async function watching () {
             // allowWatchBookmarks: true
         },
         async (type, api, obj) => {
-            console.log(type)
-            // console.log(JSON.stringify(api, null, 2))
             switch (type) {
                 case 'ADDED':
                     // need to check if already exists
@@ -37,6 +35,19 @@ async function watching () {
                         localPod.metadata.name = `${api.metadata.name}-node-red`
                         console.log(JSON.stringify(localPod, null, 2))
                         k8sApi.createNamespacedPod(api.metadata.namespace, localPod)
+                        if (api.spec?.service?.enabled) {
+                            const localService = JSON.parse.JSON.stringify(serviceTemplate)
+                            localService.metadata.name = `${api.metadata.name}-node-red-service`
+                            localService.spec.selector.name = api.metadata.name
+                            k8sApi.createNamespacedService(api.metadata.namespace, localService)
+                            if (api.spec?.ingress?.enabled) {
+                                const localIngress = JSON.parse(JSON.stringify(ingressTemplate))
+                                localIngress.metadata.name = `${api.metadata.name}-node-red-ingress`
+                                localIngress.spec.rules[0].host = api.spec.ingress.hostname
+                                localIngress.spec.rules[0].http.paths[0].backend.service.name = `${api.metadata.name}-node-red-service`
+                                k8sNetApi.createNamespacedIngress(api.metadata.namespace, localIngress)
+                            }
+                        }
                     }
                     break;
                 case 'MODIFIED':
