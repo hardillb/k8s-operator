@@ -36,7 +36,7 @@ async function watching () {
                         console.log(JSON.stringify(localPod, null, 2))
                         k8sApi.createNamespacedPod(api.metadata.namespace, localPod)
                         if (api.spec?.service?.enabled) {
-                            const localService = JSON.parse.JSON.stringify(serviceTemplate)
+                            const localService = JSON.parse(JSON.stringify(serviceTemplate))
                             localService.metadata.name = `${api.metadata.name}-node-red-service`
                             localService.spec.selector.name = api.metadata.name
                             k8sApi.createNamespacedService(api.metadata.namespace, localService)
