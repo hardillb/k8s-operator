@@ -15,6 +15,19 @@ const app = express()
 app.use(morgan('combined'))
 app.use(bodyParser.json())
 
+app.post('/create', (request, response) => {
+    console.log(request.body)
+    const answer = {
+        apiVersion: admissionReview.apiVersion,
+        kind: admissionReview.kind,
+        response: {
+            uid: admissionReview.request.uid,
+            allowed: true
+        }
+    }
+    response.send(answer)
+})
+
 const httpsServer = https.createServer(credentials, app)
 httpsServer.listen(8443, () => {
     console.log('Listening')
