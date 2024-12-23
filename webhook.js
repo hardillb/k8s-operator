@@ -17,6 +17,7 @@ app.use(bodyParser.json())
 
 app.post('/create', (request, response) => {
     console.log(request.body)
+    const admissionReview = request.body
     const answer = {
         apiVersion: admissionReview.apiVersion,
         kind: admissionReview.kind,
