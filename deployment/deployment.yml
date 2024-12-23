@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: node-red
-        image: containers.hardill.me.uk/testing/node-red:latest
+        image: containers.hardill.me.uk/testing/node-red-operator:latest
         imagePullPolicy: Always
         ports:
         - name: https
@@ -55,7 +55,7 @@ webhooks:
   - apiGroups:   [ "*" ]
     apiVersions: [ "v1", "networking.k8s.io/v1" ]
     resources:   [ "ingresses" ]
-    operations:  [ "CREATE" ]
+    operations:  [ "CREATE", "DELETE" ]
     scope:       Namespaced
   clientConfig:
     service:
