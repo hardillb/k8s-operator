@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 const { AppsV1Api, CoreV1Api, CustomObjectsApi, KubeConfig, NetworkingV1Api, Watch } = require('@kubernetes/client-node')
 
 const privateKey  = fs.readFileSync('ca/key.pem', 'utf8')
-const certificate = fs.readFileSync('ca/ingress.pem', 'utf8')
+const certificate = fs.readFileSync('ca/node-red.pem', 'utf8')
 const credentials = {key: privateKey, cert: certificate}
 
 const app = express()

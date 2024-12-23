@@ -1,6 +1,6 @@
 ca/ca.crt
 ca/ca.key
-ca/ingress.pem
+ca/node-red.pem
 ca/key.pem
 ca/req.pem
 ca/index
