@@ -48,7 +48,7 @@ app.post('/create', async (request, response) => {
                 localPod.metadata.name = `${admissionReview.request.name}-node-red`
                 await k8sApi.createNamespacedPod(admissionReview.request.namespace, localPod)
                 const object = admissionReview.request.object
-                console.log(JSON.stringify(object,null, 2))
+                // console.log(JSON.stringify(object,null, 2))
                 if (object.spec?.service?.enabled) {
                     const localService = JSON.parse(JSON.stringify(serviceTemplate))
                     localService.metadata.name = `${admissionReview.request.name}-node-red-service`
