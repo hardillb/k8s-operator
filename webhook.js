@@ -68,11 +68,17 @@ app.post('/create', async (request, response) => {
             break;
         case 'DELETE':
             try {
-                // delete pod
-                k8sNetApi.deleteNamespacedIngress(`${admissionReview.request.name}-node-red-ingress`, admissionReview.request.namespace)
-                k8sApi.deleteNamespacedService(`${admissionReview.request.name}-node-red-service`, admissionReview.request.namespace)
-                k8sApi.deleteNamespacedPod(`${admissionReview.request.name}-node-red`, admissionReview.request.namespace)
-                break;
+                await k8sNetApi.deleteNamespacedIngress(`${admissionReview.request.name}-node-red-ingress`, admissionReview.request.namespace)
+            } catch (err) {
+                console.log(err)
+            }
+            try {
+                await k8sApi.deleteNamespacedService(`${admissionReview.request.name}-node-red-service`, admissionReview.request.namespace)
+            } catch (err) {
+                console.log(err)
+            }
+            try {
+                await k8sApi.deleteNamespacedPod(`${admissionReview.request.name}-node-red`, admissionReview.request.namespace)
             } catch (err) {
                 console.log(err)
             }
