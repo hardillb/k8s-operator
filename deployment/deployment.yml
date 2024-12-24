@@ -16,7 +16,7 @@ rules:
 - apiGroups: [""]
   resources: ["services"]
   verbs: ["create", "patch", "get", "list", "watch", "delete"]
-- apiGroups: ["extensions"]
+- apiGroups: ["networking.k8s.io"]
   resources: ["ingresses"]
   verbs: ["create", "patch", "get", "list", "watch", "delete"]
 ---
