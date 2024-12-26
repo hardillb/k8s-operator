@@ -52,6 +52,8 @@ app.post('/create', async (request, response) => {
                     localConfigMap = JSON.parse(JSON.stringify(configMapTemplate))
                     localConfigMap.metadata.name = `${admissionReview.request.name}-node-red-config-map`
                     localConfigMap.data['flow.json'] = object.spec.flow
+                    console.log(JSON.stringify(localConfigMap,null, 2))
+                    await k8sApi.createNamespacedConfigMap(admissionReview.request.namespace, localConfigMap)
                 }
 
                 const localPod = JSON.parse(JSON.stringify(podTemplate))
@@ -72,6 +74,7 @@ app.post('/create', async (request, response) => {
                         }
                     ]
                 }
+                console.log(JSON.stringify(localPod, null, 2))
                 await k8sApi.createNamespacedPod(admissionReview.request.namespace, localPod)
                 
                 if (object.spec?.service?.enabled) {
