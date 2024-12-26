@@ -18,6 +18,9 @@ spec:
                 flow:
                   description: The Node-RED flow to run
                   type: string
+                creds:
+                  description: The Node-RED credential file
+                  type: string
                 settings:
                   description: The Node-RED settings.js
                   type: string

@@ -48,10 +48,18 @@ app.post('/create', async (request, response) => {
                 // console.log(JSON.stringify(object,null, 2))
                 let localConfigMap = null
 
-                if (object.spec?.flow || object.spec?.settings) {
+                if (object.spec?.flow || object.spec?.creds || object.spec?.settings) {
                     localConfigMap = JSON.parse(JSON.stringify(configMapTemplate))
                     localConfigMap.metadata.name = `${admissionReview.request.name}-node-red-config-map`
-                    localConfigMap.data['flow.json'] = object.spec.flow
+                    if (object.spec.flow) {
+                        localConfigMap.data['flow.json'] = object.spec.flow
+                    }
+                    if (object.spec.creds) {
+                        localConfigMap.data['flow_creds.json'] = object.spec.creds
+                    }
+                    if (object.spec.settings) {
+                        localConfigMap.data['settings.js'] = object.spec.settings
+                    }
                     console.log(JSON.stringify(localConfigMap,null, 2))
                     await k8sApi.createNamespacedConfigMap(admissionReview.request.namespace, localConfigMap)
                 }
@@ -61,37 +69,42 @@ app.post('/create', async (request, response) => {
                 if (localConfigMap) {
                     localPod.spec.containers[0].volumeMounts = [
                         {
-                            mountPath: '/opt',
-                            name: 'flow-configmap'
+                            mountPath: '/data',
+                            name: 'data'
                         }
                     ]
                     localPod.spec.volumes = [
                         {
+                            name: 'data',
+                            emptyDir: {}
+                        },
+                        {
                             name: 'flow-configmap',
                             configMap: {
                                 name: `${admissionReview.request.name}-node-red-config-map`,
-                                items: [
-                                    {
-                                        key: 'flow.json',
-                                        path: 'flow.json'
-                                    }
-                                ]
                             }
                         }
                     ]
+                    if (object.spec?.flow) {
+                        localPod.spec.v
+                    }
                     localPod.spec.initContainers = [
                         {
                             name: 'copy-flow',
                             image: 'node:18-alpine',
                             command: [
                                 'cp',
-                                '/opt/flow.json',
-                                '/data/flow.json'
+                                '/opt/*',
+                                '/data/',
                             ],
                             volumeMounts: [
                                 {
                                     mountPath: '/opt',
                                     name: 'flow-configmap'
+                                },
+                                {
+                                    mountPath: '/data',
+                                    name: 'data'
                                 }
                             ]
                         }
