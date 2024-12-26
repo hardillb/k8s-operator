@@ -5,7 +5,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 
 const { AppsV1Api, CoreV1Api, CustomObjectsApi, KubeConfig, NetworkingV1Api, Watch } = require('@kubernetes/client-node')
-const { podTemplate, serviceTemplate, ingressTemplate  } = require('./lib/templates.js')
+const { podTemplate, serviceTemplate, ingressTemplate, configMapTemplate  } = require('./lib/templates.js')
 
 const privateKey  = fs.readFileSync('ca/key.pem', 'utf8')
 const certificate = fs.readFileSync('ca/node-red.pem', 'utf8')
@@ -44,11 +44,36 @@ app.post('/create', async (request, response) => {
     switch (type) {
         case 'CREATE':
             try {
-                const localPod = JSON.parse(JSON.stringify(podTemplate))
-                localPod.metadata.name = `${admissionReview.request.name}-node-red`
-                await k8sApi.createNamespacedPod(admissionReview.request.namespace, localPod)
                 const object = admissionReview.request.object
                 // console.log(JSON.stringify(object,null, 2))
+                let localConfigMap = null
+
+                if (object.spec?.flow || object.spec?.settings) {
+                    localConfigMap = JSON.parse(JSON.stringify(configMapTemplate))
+                    localConfigMap.metadata.name = `${admissionReview.request.name}-node-red-config-map`
+                    localConfigMap.data['flow.json'] = object.spec.flow
+                }
+
+                const localPod = JSON.parse(JSON.stringify(podTemplate))
+                localPod.metadata.name = `${admissionReview.request.name}-node-red`
+                if (localConfigMap) {
+                    localPod.spec.containers[0].volumeMounts = [
+                        {
+                            mountPath: '/data',
+                            name: 'configMap'
+                        }
+                    ]
+                    localPod.volumes = [
+                        {
+                            name: 'configMap',
+                            configMap: {
+                                name: `${admissionReview.request.name}-node-red-config-map`
+                            }
+                        }
+                    ]
+                }
+                await k8sApi.createNamespacedPod(admissionReview.request.namespace, localPod)
+                
                 if (object.spec?.service?.enabled) {
                     const localService = JSON.parse(JSON.stringify(serviceTemplate))
                     localService.metadata.name = `${admissionReview.request.name}-node-red-service`
@@ -66,16 +91,23 @@ app.post('/create', async (request, response) => {
                 console.log(err)
             } 
             break;
+        case 'UPDATE':
+            break;
         case 'DELETE':
-            try {
-                await k8sNetApi.deleteNamespacedIngress(`${admissionReview.request.name}-node-red-ingress`, admissionReview.request.namespace)
-            } catch (err) {
-                console.log(err)
+            const object = admissionReview.request.oldObject
+            if (object.spec?.ingress?.enabled) {
+                try {
+                    await k8sNetApi.deleteNamespacedIngress(`${admissionReview.request.name}-node-red-ingress`, admissionReview.request.namespace)
+                } catch (err) {
+                    console.log(err)
+                }
             }
-            try {
-                await k8sApi.deleteNamespacedService(`${admissionReview.request.name}-node-red-service`, admissionReview.request.namespace)
-            } catch (err) {
-                console.log(err)
+            if (object.spec?.service?.enabled) {
+                try {
+                    await k8sApi.deleteNamespacedService(`${admissionReview.request.name}-node-red-service`, admissionReview.request.namespace)
+                } catch (err) {
+                    console.log(err)
+                }
             }
             try {
                 await k8sApi.deleteNamespacedPod(`${admissionReview.request.name}-node-red`, admissionReview.request.namespace)

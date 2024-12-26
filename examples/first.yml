@@ -1,6 +1,0 @@
-apiVersion: k8s.hardill.me.uk/v1
-kind: Random
-metadata:
-  name: first
-spec:
-  seed: 10

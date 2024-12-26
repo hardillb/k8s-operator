@@ -3,6 +3,9 @@ kind: Node-RED
 metadata:
   name: test
 spec:
+  flow: |
+    [
+    ]
   service:
     enabled: true
   ingress:
