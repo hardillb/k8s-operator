@@ -61,16 +61,39 @@ app.post('/create', async (request, response) => {
                 if (localConfigMap) {
                     localPod.spec.containers[0].volumeMounts = [
                         {
-                            mountPath: '/data',
-                            name: 'configMap'
+                            mountPath: '/opt',
+                            name: 'flow-configmap'
                         }
                     ]
-                    localPod.volumes = [
+                    localPod.spec.volumes = [
                         {
-                            name: 'configMap',
+                            name: 'flow-configmap',
                             configMap: {
-                                name: `${admissionReview.request.name}-node-red-config-map`
+                                name: `${admissionReview.request.name}-node-red-config-map`,
+                                items: [
+                                    {
+                                        key: 'flow.json',
+                                        path: 'flow.json'
+                                    }
+                                ]
                             }
+                        }
+                    ]
+                    localPod.spec.initContainers = [
+                        {
+                            name: 'copy-flow',
+                            image: 'node:18-alpine',
+                            command: [
+                                'cp',
+                                '/opt/flow.json',
+                                '/data/flow.json'
+                            ],
+                            volumeMounts: [
+                                {
+                                    mountPath: '/opt',
+                                    name: 'flow-configmap'
+                                }
+                            ]
                         }
                     ]
                 }
@@ -116,6 +139,13 @@ app.post('/create', async (request, response) => {
                 await k8sApi.deleteNamespacedPod(`${admissionReview.request.name}-node-red`, admissionReview.request.namespace)
             } catch (err) {
                 console.log(err)
+            }
+            if (object.spec?.flow || object.spec?.settings) {
+                try {
+                    await k8sApi.deleteNamespacedConfigMap(`${admissionReview.request.name}-node-red-config-map`, admissionReview.request.namespace)
+                } catch (err) {
+                    console.log(err)
+                }
             }
             break;
     }
