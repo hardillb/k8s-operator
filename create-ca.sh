@@ -15,3 +15,6 @@ openssl req -new -subj "/C=GB/CN=node-red" \
     -nodes
 
 openssl ca -config ./sign.conf -in req.pem -out node-red.pem -batch
+
+CABUNDLE=$(base64 -w 0 ca/ca.crt)
+sed -i "s/CABUNDLE/$CABUNDLE/" deployment/deployment.yml
