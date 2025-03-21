@@ -9,6 +9,7 @@ git clone https://github.com/hardillb/k8s-operator.git
 cd k8s-operator
 ./create-ca.sh
 docker build . -t containers.hardill.me.uk/testing/node-red-operator:latest
+kubectl apply -f crds/node-red.yml
 kubectl apply -f deployment/deployment.yml
 ```
 

@@ -55,3 +55,4 @@ spec:
     kind: Node-RED
     shortNames:
       - nr
+
